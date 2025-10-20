@@ -1,3 +1,6 @@
+Note: the create account database is not working
+
+
 Prerequisites
 
 Make sure you have the following installed:
@@ -41,5 +44,6 @@ Password: password
 Access the Application
 
 Once both servers are running, open your browser and navigate to the provided local development URL (usually http://localhost:5173).
+
 
 Enjoy exploring Silung!
