@@ -597,15 +597,24 @@ export default {
       if (this.quantity > 1) this.quantity--
     },
     addToCart() {
-      this.cartItems.push({
+      // Create cart item from selectedItem
+      const cartItem = {
         id: `${this.selectedItem.name}-${Date.now()}`,
         name: this.selectedItem.name,
         price: this.selectedItem.price,
         quantity: this.quantity,
         image: this.selectedItem.image,
         specialInstructions: this.specialInstructions
-      })
+      }
       
+      // Add to local cart items
+      this.cartItems.push(cartItem)
+      
+      // Also add to Vuex store if available
+      if (this.$store && this.$store.dispatch) {
+        this.$store.dispatch('cart/addToCart', cartItem)
+      }
+
       // Store last added item for thank you message
       this.lastAddedItem = this.selectedItem
       this.lastAddedQuantity = this.quantity
@@ -629,18 +638,49 @@ export default {
     increaseCartQuantity(id) {
       const item = this.cartItems.find(i => i.id === id)
       if (item) item.quantity++
+      
+      // Also update Vuex store if available
+      if (this.$store && this.$store.dispatch) {
+        this.$store.dispatch('cart/updateQuantity', {
+          itemId: id,
+          quantity: item.quantity
+        })
+      }
     },
     decreaseCartQuantity(id) {
       const item = this.cartItems.find(i => i.id === id)
-      if (item.quantity > 1) item.quantity--
-      else this.removeFromCart(id)
+      if (item) {
+        if (item.quantity > 1) {
+          item.quantity--
+          
+          // Also update Vuex store if available
+          if (this.$store && this.$store.dispatch) {
+            this.$store.dispatch('cart/updateQuantity', {
+              itemId: id,
+              quantity: item.quantity
+            })
+          }
+        } else {
+          this.removeFromCart(id)
+        }
+      }
     },
     removeFromCart(id) {
       this.cartItems = this.cartItems.filter(i => i.id !== id)
+      
+      // Also update Vuex store if available
+      if (this.$store && this.$store.dispatch) {
+        this.$store.dispatch('cart/removeFromCart', id)
+      }
     },
     clearCart() {
       this.cartItems = []
       this.showCart = false
+      
+      // Also update Vuex store if available
+      if (this.$store && this.$store.dispatch) {
+        this.$store.dispatch('cart/clearCart')
+      }
     },
     proceedToCheckout() {
       if (this.cartItems.length === 0) {
@@ -648,6 +688,19 @@ export default {
         return
       }
       this.$router.push('/checkout')
+    }
+  },
+  mounted() {
+    // Load cart items from localStorage or Vuex store
+    if (this.$store && this.$store.state.cart) {
+      // Use Vuex store if available
+      this.cartItems = [...this.$store.state.cart.items]
+    } else {
+      // Fallback to localStorage
+      const savedCart = localStorage.getItem('cartItems')
+      if (savedCart) {
+        this.cartItems = JSON.parse(savedCart)
+      }
     }
   }
 }
