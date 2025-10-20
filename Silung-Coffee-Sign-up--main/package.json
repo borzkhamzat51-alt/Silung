@@ -1,0 +1,31 @@
+{
+  "name": "silung-coffee-mevn",
+  "version": "1.0.0",
+  "description": "Silung Coffee Shop - MEVN Stack Application",
+  "main": "server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm run serve",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start"
+  },
+  "keywords": [
+    "coffee",
+    "shop",
+    "mevn",
+    "vue",
+    "express",
+    "mongodb"
+  ],
+  "author": "Pipowe Laplana",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "all": "^0.0.0",
+    "gsap": "^3.13.0"
+  }
+}
