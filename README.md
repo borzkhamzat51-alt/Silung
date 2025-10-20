@@ -1,4 +1,5 @@
 Note: the create account database is not working
+And the documentation is in the comment section of canvas
 
 
 Prerequisites
